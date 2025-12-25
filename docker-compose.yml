@@ -6,17 +6,17 @@ services:
     container_name: sosvio-postgres
     environment:
       POSTGRES_USER: sosvio_user
-      POSTGRES_PASSWORD: sosvio_pass_2024
+      POSTGRES_PASSWORD: test1234
       POSTGRES_DB: sosvio_db
-    ports: 
-      - "5432:5432"
-    volumes:
+    ports:
+      - "5433:5432"
+    volumes: 
       - postgres_data:/var/lib/postgresql/data
-    networks: 
+    networks:
       - sosvio-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sosvio_user -d sosvio_db"]
+      test:  ["CMD-SHELL", "pg_isready -U sosvio_user -d sosvio_db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -31,7 +31,7 @@ services:
       - redis_data:/data
     networks:
       - sosvio-network
-    restart:  unless-stopped
+    restart: unless-stopped
     healthcheck: 
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -40,27 +40,27 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name:  sosvio-pgadmin
-    environment:
+    container_name: sosvio-pgadmin
+    environment: 
       PGADMIN_DEFAULT_EMAIL: admin@sosvio.com
-      PGADMIN_DEFAULT_PASSWORD:  admin123
+      PGADMIN_DEFAULT_PASSWORD: admin123
       PGADMIN_CONFIG_SERVER_MODE: 'False'
-    ports: 
+    ports:
       - "5050:80"
-    volumes:
+    volumes: 
       - pgadmin_data:/var/lib/pgadmin
-    networks: 
+    networks:
       - sosvio-network
-    restart: unless-stopped
+    restart:  unless-stopped
     depends_on:
       - postgres
 
-  redis-commander: 
+  redis-commander:
     image: rediscommander/redis-commander:latest
     container_name: sosvio-redis-commander
     environment:
       REDIS_HOSTS: local:redis:6379:0:sosvio_redis_2024
-    ports:
+    ports: 
       - "8081:8081"
     networks:
       - sosvio-network
@@ -69,13 +69,13 @@ services:
       - redis
 
 volumes:
-  postgres_data:
+  postgres_data: 
     driver: local
   redis_data:
     driver: local
-  pgadmin_data:
+  pgadmin_data: 
     driver: local
 
-networks:
-  sosvio-network:
+networks: 
+  sosvio-network: 
     driver: bridge
