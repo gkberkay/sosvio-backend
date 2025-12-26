@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Sosvio.Application.Common.Interfaces;
 using Sosvio.Domain.Entities;
 
 namespace Sosvio.Infrastructure.Persistence;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
     {
     }
 
@@ -16,11 +18,15 @@ public class ApplicationDbContext : DbContext
     public DbSet<ListingImage> ListingImages => Set<ListingImage>();
     public DbSet<Message> Messages => Set<Message>();
 
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        // Burada gelecekte audit fields (CreatedAt, UpdatedAt) güncellenebilir
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        // Configuration'ları uygulamak için
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 }

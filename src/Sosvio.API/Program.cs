@@ -1,20 +1,16 @@
-using Microsoft.EntityFrameworkCore;
-using Sosvio.Infrastructure.Persistence;
+using Sosvio.Application;
+using Sosvio.Infrastructure;
 
-var builder = WebApplication. CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container. 
+// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Database Configuration
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        npgsqlOptions => npgsqlOptions.MigrationsAssembly("Sosvio.Infrastructure")
-    )
-);
+// Application & Infrastructure Layers
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
